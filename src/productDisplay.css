@@ -1,0 +1,36 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color:rgb(211, 200, 200);
+
+}
+.headers{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 20px;
+}
+.product-list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 10px;
+   margin-top: 50px;
+}
+.products img{
+    width: 200px;
+    height: 200px;
+
+}
+
+button{
+    padding: 5px;
+    background-color: rgb(158, 160, 162);
+    border-radius: 10%;
+}
+
