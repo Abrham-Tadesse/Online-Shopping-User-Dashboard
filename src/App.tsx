@@ -1,6 +1,6 @@
 
 import {DisplayProduct} from "./productDisplay" 
-
+import { CartDisplay } from "./cartDisplay"
 
  export function AllDisplay(){
        
@@ -8,7 +8,8 @@ import {DisplayProduct} from "./productDisplay"
   return(
 
     <>
-     <DisplayProduct />
+     {/* <DisplayProduct /> */}
+    <CartDisplay />
     </>
   )
  }

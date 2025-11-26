@@ -1,10 +1,32 @@
-import {useState} from "react";
+import React, {useState, type Dispatch} from "react";
 import { totalItem, totalPrice } from "./productDisplay";
+import "./cartDisplay.css"
 
+export function CartDisplay(){
 
+  const [amount ,setAmount] = useState<addeditems[]>(addedItemArray);
+     
+  return(
+    <>
+    <Navigation />
+    <DisplayAddeddProducts amounts = {amount} onAmount = {setAmount} />
 
+    <Footer />
+    </>
+  )
+}
 
+//Sattic data
 
+interface addeditems{
+    id : number;
+    name : string,
+    image : string,
+    price : number,
+    quantity : number,
+}
+
+const addedItemArray : addeditems[] = [{id : 1 ,name : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 , quantity : 0 }, {id : 2 , name : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50 , quantity : 0},{id : 3 ,name : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 ,quantity : 0}];
 
 
 export function Navigation(){
@@ -42,3 +64,36 @@ export function Footer(){
     </>
   )
 }
+
+
+export function DisplayAddeddProducts({amounts,onAmount} : {amounts : addeditems[], onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
+
+
+  const handleSelect = function(id : number , quantity : number){
+      onAmount(prev => amounts.map(pr => (pr.id === id ? {...pr,quantity} : pr))); // Check the id of the product and if it is correct replace the quantity
+      
+  }
+  
+
+  return(
+    <>
+      
+      {addedItemArray.map( item => (
+         <li key={item.id}> <img src={item.image} alt="The product picture is not found" className="image"/> <span>{item.name}</span> <span>{item.price}</span> 
+
+         <select title="camount" className="options" onChange={ (e : React.ChangeEvent<HTMLSelectElement>) => handleSelect(item.id , Number((e.target.value)))}>
+              {Array.from({ length: 15 }, (_, i) => (
+              <option key={i + 1} value={i+1}>
+                   {i + 1}
+              </option>
+             ))}
+        </select>{amounts.map(element => (<span>{element.price * element.quantity}</span>))}
+         <button className="remove"> &times; </button></li>
+      ))}
+    </>
+  )
+}
+
+// amounts.forEach(element => {
+//             (element.id === id ? element.price*element.quantity : element.price);
+//       })
