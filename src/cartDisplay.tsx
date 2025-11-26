@@ -5,13 +5,17 @@ import "./cartDisplay.css"
 export function CartDisplay(){
 
   const [amount ,setAmount] = useState<addeditems[]>(addedItemArray);
-     
+  const[isOrdered, setIsordered] = useState<boolean>(false);
   return(
     <>
-    <Navigation amounts = {amount} onAmount = {setAmount}/>
-    <DisplayAddeddProducts amounts = {amount} onAmount = {setAmount} />
+    <Navigation amounts = {amount} onAmount = {setAmount}
+                isOrdered = {isOrdered}/>
+    <DisplayAddeddProducts amounts = {amount} onAmount = {setAmount} 
+                            isOrdered = {isOrdered}/>
 
-    <Footer amounts = {amount} onAmount = {setAmount}/>
+    <Footer amounts = {amount} onAmount = {setAmount}
+                      isordered = {isOrdered} onOrdered = {setIsordered}
+    />
     </>
   )
 }
@@ -29,7 +33,10 @@ interface addeditems{
 const addedItemArray : addeditems[] = [{id : 1 ,name : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 , quantity :1}, {id : 2 , name : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50 , quantity :1},{id : 3 ,name : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 ,quantity :1}];
 
 
-export function Navigation({amounts,onAmount} : {amounts : addeditems[], onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
+export function Navigation({amounts,onAmount,isOrdered} : 
+  {amounts : addeditems[], 
+   isOrdered : boolean,
+  onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
 
     const totalPrice = amounts.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
     const totalItems = amounts.reduce((items,objItem) => items + (objItem.quantity),0);
@@ -42,8 +49,8 @@ export function Navigation({amounts,onAmount} : {amounts : addeditems[], onAmoun
     <h2> Acme co.</h2>
       </section>
       <section className="price-num">
-        <p>total item <span className="value"> {`${totalItems}`}</span></p>
-        <p>total price <span className="value">{`$ ${totalPrice}`}</span></p>
+        <p>total item <span className="value"> {isOrdered ? 0 : totalItems}</span></p>
+        <p>total price <span className="value">$ {isOrdered? "0.00" : totalPrice}</span></p>
         <p><button className="view">view product</button></p>
       </section>
     </div>
@@ -53,27 +60,38 @@ export function Navigation({amounts,onAmount} : {amounts : addeditems[], onAmoun
 }
 
 
-export function Footer({amounts,onAmount} : {amounts : addeditems[], onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
+export function Footer({amounts,onAmount,isordered,onOrdered} : 
+  {amounts : addeditems[],isordered : boolean,onOrdered : Dispatch<React.SetStateAction<boolean>>, 
+  onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
 
-    const totalPrice = amounts.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
-    const totalItems = amounts.reduce((items,objItem) => items + (objItem.quantity),0);
+    let totalPrice = amounts.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
+    let totalItems = amounts.reduce((items,objItem) => items + (objItem.quantity),0);
+    
+   const handleOrder = function(){
+      onOrdered(true);
+      console.log(isordered);
 
+    }
 
   return(
-    <>
+    <> { !isordered && (
+      <div>
       <section className="footer price-num">
         <p>total item <span className="value"> {`${totalItems}`}</span></p>
         <p>total price <span className="value">{`$ ${totalPrice}`}</span></p>
-        <button>place order</button>
+        <button onClick={()=> handleOrder()}>place order</button>
       </section>
-
-      <section className="foot"><p>shopping cart &copy; 2025</p></section>
+      </div>
+    )
+  }
+  <section className="foot"><p>shopping cart &copy; 2025</p></section>
+  
     </>
   )
 }
 
 
-export function DisplayAddeddProducts({amounts,onAmount} : {amounts : addeditems[], onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
+export function DisplayAddeddProducts({amounts,onAmount,isOrdered} : {amounts : addeditems[],isOrdered:boolean, onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
 
 
   const handleSelect = function(id : number , quantity : number){
@@ -89,8 +107,8 @@ export function DisplayAddeddProducts({amounts,onAmount} : {amounts : addeditems
 
   return(
     <>
-      
-      {amounts.map( item => (
+      {!isOrdered && (
+          amounts.map( item => (
          <li key={item.id}> <img src={item.image} alt="The product picture is not found" className="image"/> <span>{item.name}</span> <span>{item.price}</span> 
 
          <select value={item.quantity} title="camount" className="options" onChange={(e : React.ChangeEvent<HTMLSelectElement>) => handleSelect(item.id , Number((e.target.value)))}>
@@ -102,7 +120,13 @@ export function DisplayAddeddProducts({amounts,onAmount} : {amounts : addeditems
         </select> 
         <span>{item.price * item.quantity}</span>
          <button className="remove" onClick={() => handleButton(item.id)}> &times; </button></li>
-      ))}
+      ))
+      )}
+      {
+      isOrdered && (
+        <h3>Thank you for your order !!! </h3>
+      )
+    }
     </>
   )
 }
