@@ -8,8 +8,8 @@ import { CartDisplay } from "./cartDisplay"
   return(
 
     <>
-     {/* <DisplayProduct /> */}
-    <CartDisplay />
+     <DisplayProduct />
+    {/* <CartDisplay /> */}
     </>
   )
  }

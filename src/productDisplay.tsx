@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import React, { useState,useEffect, type Dispatch, type SetStateAction } from "react";
 import "./productDisplay.css";
 
 
@@ -9,35 +9,55 @@ import "./productDisplay.css";
 
 export interface productType{
     id : number;
-    name : string,
+    title : string,
     image : string,
     price : number,
-}
-export let totalPrice : number = 0 ;
-export let totalItem : number = 0;
+  }
+  export let totalPrice : number = 0 ;
+  export let totalItem : number = 0;
+  let searchResult : productType[];
 
-const productArray : productType[] = [{id : 1 ,name : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 }, {id : 2 , name : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50},{id : 3 ,name : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 }];
+const productArray : productType[] = [{id : 1 ,title : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 }, {id : 2 , title : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50},{id : 3 ,title : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 }];
+
 
 
 
 export function DisplayProduct(){
      const [isAdded, setIsAdded] = useState<number>(0);
-    
+     const [products,setproducts] = useState<productType[]>([]);
+     const [query,setQuery] = useState<string>("");
+
+     
+  useEffect(function(){
+    async function effected(){
+      const resp = await fetch("https://fakestoreapi.com/products");
+      const data = await resp.json();
+      setproducts(data);
+      console.log(data);
+    }
+    effected();
+  },[])
+
 
   return(
-
     <>
-     <Navigation />
-     <Products isAdded = {isAdded} onAdded = {setIsAdded}/>
-
-
-     <Footer />
+     <Navigation  query = {query} setQuery={setQuery} products = {products} setProducts = {setproducts}/>
+     <Products isAdded = {isAdded} onAdded = {setIsAdded} 
+         products = {products}/>
+        <Footer />
     </>
   )
 }
 
-export function Navigation(){
+export function Navigation({query,setQuery,products,setProducts} : {query : string,products : productType[], setProducts :Dispatch<React.SetStateAction<productType[]>> ,setQuery : Dispatch<React.SetStateAction<string>>}){
 
+          const search = function(result : string){
+            setQuery(result);
+            searchResult = products.filter(pro => pro.title.trim().toLowerCase().includes(query.toLowerCase()));
+          console.log(result);
+               }
+
+             
 
   return(
 
@@ -46,9 +66,10 @@ export function Navigation(){
       <section className="title">
     <h2> Acme co.</h2>
       </section>
+       <input type="text" className="searchInput" placeholder="search here" onChange={(e) => search(e.target.value)}/> 
       <section className="price-num">
         <p>total item <span className="value"> {`${totalItem}`}</span></p>
-        <p>total price <span className="value">{`$ ${totalPrice}`}</span></p>
+        <p>total price <span className="value">{`$ ${totalPrice}.00`}</span></p>
         <p><button className="view">view cart</button></p>
       </section>
     </div>
@@ -63,22 +84,18 @@ export function Footer(){
     <>
       <section className="footer price-num">
         <p>total item <span className="value"> {`${totalItem}`}</span></p>
-        <p>total price <span className="value">{`$ ${totalPrice}`}</span></p>
+        <p>total price <span className="value">{`$ ${totalPrice}.00`}</span></p>
         <p>shopping cart &copy; 2025</p>
       </section>
     </>
   )
 }
 
-export function Products({isAdded,onAdded} : {isAdded : number, onAdded : React.Dispatch<React.SetStateAction<number>>}){
+export function Products({isAdded,onAdded,products} :
+   {isAdded : number,products : productType[],onAdded : React.Dispatch<React.SetStateAction<number>>}){
 
   const [addedCart , setAddedCart] = useState<number[]>([]);
-
-
-//     useEffect(() => {
-//   console.log("Updated cart:", addedCart);
-// }, [addedCart]);
-
+  const displayAllProduct : productType[] = searchResult? searchResult : products;
 
     function handleCart(item : productType){
        onAdded(prev => prev + 1);
@@ -93,11 +110,11 @@ export function Products({isAdded,onAdded} : {isAdded : number, onAdded : React.
     return(
         <>
         <div className="product-list">
-       {productArray.map(item => (
+       {displayAllProduct.map(item => (
         <section className="products" key={item.image}>
-        <p>{item.name}</p>
+        <p>{item.title}</p>
         <img src= {`${item.image}`} alt=" no picture is found" />
-        <p>price : {(item.price)}</p>
+        <p>price : ${(item.price)}.00</p>
         <p>{addedCart.includes(item.id) && "✅Added to the cart" }</p>
         <p><button onClick={() => handleCart(item)}>Add To cart</button></p>
         </section>
@@ -108,6 +125,4 @@ export function Products({isAdded,onAdded} : {isAdded : number, onAdded : React.
 
 
 }
-
-
 

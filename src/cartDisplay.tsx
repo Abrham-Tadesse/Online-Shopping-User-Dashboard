@@ -70,7 +70,6 @@ export function Footer({amounts,onAmount,isordered,onOrdered} :
    const handleOrder = function(){
       onOrdered(true);
       console.log(isordered);
-
     }
 
   return(
@@ -91,7 +90,8 @@ export function Footer({amounts,onAmount,isordered,onOrdered} :
 }
 
 
-export function DisplayAddeddProducts({amounts,onAmount,isOrdered} : {amounts : addeditems[],isOrdered:boolean, onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
+export function DisplayAddeddProducts({amounts,onAmount,isOrdered} : 
+  {amounts : addeditems[],isOrdered:boolean, onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
 
 
   const handleSelect = function(id : number , quantity : number){
