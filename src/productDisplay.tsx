@@ -28,16 +28,27 @@ export function DisplayProduct(){
      const [query,setQuery] = useState<string>("");
      const [searchResult,setSearchResult] = useState<productType[]>([]);
      const [isLoading, setIsLoading] = useState<boolean>(false);
+     const [error,setError] = useState<string | null>("");
 
    // Displaying the product when the app is intially rendered  
   useEffect(function(){
     async function effected(){
-      setIsLoading(true);
-      const resp = await fetch("https://fakestoreapi.com/products");
+      try{
+        setIsLoading(true);
+        setError(null);
+        const resp = await fetch("https://fakestoreapi.com/products");
+          if (!resp.ok) {
+        throw new Error("Failed to fetch products");
+          }
       const data = await resp.json();
       setproducts(data);
-      console.log(data);
-      setIsLoading(false);
+      }
+      catch (err : any) {setError(err.message);
+
+      }
+      finally{ 
+        setIsLoading(false);
+      }
     }
     effected();
   },[])
@@ -46,6 +57,13 @@ export function DisplayProduct(){
   useEffect(() => {
   const filtered = products.filter(pro =>
     pro.title.toLowerCase().includes(query.trim().toLowerCase()));
+    
+    if(filtered.length===0){
+      setError("No product that muches to the search result");
+    }else{
+       setError(null);
+    }
+
 
   setSearchResult(filtered);
 }, [query, products]);
@@ -56,7 +74,7 @@ export function DisplayProduct(){
      <Navigation setQuery={setQuery}/>
      <Products isAdded = {isAdded} onAdded = {setIsAdded} 
          products = {products} searchResult={searchResult} 
-         isLoading = {isLoading}/>
+         isLoading = {isLoading} error = {error}/>
         <Footer />
     </>
   )
@@ -97,8 +115,8 @@ export function Footer(){
   )
 }
 
-export function Products({isAdded,onAdded,products,searchResult,isLoading} :
-   {isAdded : number,products : productType[],searchResult:productType[],isLoading : boolean,
+export function Products({isAdded,onAdded,products,searchResult,isLoading,error} :
+   {isAdded : number,products : productType[],searchResult:productType[],isLoading : boolean,error : string | null,
      onAdded : React.Dispatch<React.SetStateAction<number>>}){
 
 
@@ -118,7 +136,7 @@ export function Products({isAdded,onAdded,products,searchResult,isLoading} :
 
     return(
         <>
-        {!isLoading && displayAllProduct &&  
+        {!isLoading && !error &&  
         <div className="product-list">
        {displayAllProduct.map(item => (
         <section className="products" key={item.image}>
@@ -132,10 +150,8 @@ export function Products({isAdded,onAdded,products,searchResult,isLoading} :
        </div>
        }
        {isLoading && <p className="loading">Loading...</p>} 
-       {!searchResult || products && <p className="error">The product is not found !</p>}
+       {error && <p className="error">{error}</p>}
         </>
     )
-
-
 }
 
