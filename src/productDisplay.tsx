@@ -27,14 +27,17 @@ export function DisplayProduct(){
      const [products,setproducts] = useState<productType[]>([]);
      const [query,setQuery] = useState<string>("");
      const [searchResult,setSearchResult] = useState<productType[]>([]);
+     const [isLoading, setIsLoading] = useState<boolean>(false);
 
    // Displaying the product when the app is intially rendered  
   useEffect(function(){
     async function effected(){
+      setIsLoading(true);
       const resp = await fetch("https://fakestoreapi.com/products");
       const data = await resp.json();
       setproducts(data);
       console.log(data);
+      setIsLoading(false);
     }
     effected();
   },[])
@@ -52,7 +55,8 @@ export function DisplayProduct(){
     <>
      <Navigation setQuery={setQuery}/>
      <Products isAdded = {isAdded} onAdded = {setIsAdded} 
-         products = {products} searchResult={searchResult}/>
+         products = {products} searchResult={searchResult} 
+         isLoading = {isLoading}/>
         <Footer />
     </>
   )
@@ -93,35 +97,42 @@ export function Footer(){
   )
 }
 
-export function Products({isAdded,onAdded,products,searchResult} :
-   {isAdded : number,products : productType[],searchResult:productType[],onAdded : React.Dispatch<React.SetStateAction<number>>}){
+export function Products({isAdded,onAdded,products,searchResult,isLoading} :
+   {isAdded : number,products : productType[],searchResult:productType[],isLoading : boolean,
+     onAdded : React.Dispatch<React.SetStateAction<number>>}){
+
 
   const [addedCart , setAddedCart] = useState<number[]>([]);
   const displayAllProduct : productType[] = searchResult? searchResult : products;
-// handling the add to cart button
+
+
+ // handling the add to cart button
     function handleCart(item : productType){
        onAdded(prev => prev + 1);
        totalPrice += item.price;
        totalItem = isAdded + 1;
       //  totalItem += 1;
       setAddedCart(prev => [...prev, item.id]);
-      
-
     }
+
 
     return(
         <>
+        {!isLoading && displayAllProduct &&  
         <div className="product-list">
        {displayAllProduct.map(item => (
         <section className="products" key={item.image}>
         <p>{item.title}</p>
         <img src= {`${item.image}`} alt=" no picture is found" />
-        <p>price : ${(item.price)}.00</p>
+        <p>price : ${(item.price)}</p>
         <p>{addedCart.includes(item.id) && "✅Added to the cart" }</p>
         <p><button onClick={() => handleCart(item)}>Add To cart</button></p>
         </section>
        ))} 
        </div>
+       }
+       {isLoading && <p className="loading">Loading...</p>} 
+       {!searchResult || products && <p className="error">The product is not found !</p>}
         </>
     )
 

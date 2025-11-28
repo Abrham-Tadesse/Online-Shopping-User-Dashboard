@@ -42,8 +42,16 @@ button{
     background-color: rgba(207, 215, 215, 0.5);
 }
 
+.loading{
+    text-align: center;
+    font-size: 2.5em;
 
-
+}
+.error{
+    text-align: center;
+    color: red;
+    font-size: 2.5em;
+}
 
 
 .footer{
