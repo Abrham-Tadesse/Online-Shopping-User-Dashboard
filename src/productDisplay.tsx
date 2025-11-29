@@ -58,7 +58,7 @@ export function DisplayProduct(){
   const filtered = products.filter(pro =>
     pro.title.toLowerCase().includes(query.trim().toLowerCase()));
     
-    if(filtered.length===0){
+    if(filtered.length ===0 && products.length !==0 ){
       setError("No product that muches to the search result");
     }else{
        setError(null);
