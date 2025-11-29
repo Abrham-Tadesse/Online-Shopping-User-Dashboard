@@ -1,6 +1,7 @@
 
 import {DisplayProduct} from "./productDisplay" 
 import { CartDisplay } from "./cartDisplay"
+import { CartContextprovider } from "./contexts"
 
  export function AllDisplay(){
        
@@ -8,8 +9,10 @@ import { CartDisplay } from "./cartDisplay"
   return(
 
     <>
+    <CartContextprovider >
      <DisplayProduct />
     {/* <CartDisplay /> */}
+    </CartContextprovider>
     </>
   )
  }

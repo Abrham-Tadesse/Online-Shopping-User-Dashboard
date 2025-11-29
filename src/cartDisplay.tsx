@@ -1,19 +1,27 @@
-import React, {useEffect, useState, type Dispatch} from "react";
-import { totalItem, totalPrice } from "./productDisplay";
+import React, {useContext, useEffect, useState, type Dispatch} from "react";
+import { totalItem, totalPrice, type productType } from "./productDisplay";
 import "./cartDisplay.css"
+import { cartContext } from "./contexts";
+
+
+
 
 export function CartDisplay(){
 
   const [amount ,setAmount] = useState<addeditems[]>(addedItemArray);
   const[isOrdered, setIsordered] = useState<boolean>(false);
+  const contexts = useContext(cartContext);
+  if(!contexts) return;
+ const {isAdded, setIsAdded,addedItems,setAddedItems} =contexts;
+
   return(
     <>
-    <Navigation amounts = {amount} onAmount = {setAmount}
+    <Navigation addedItems = {addedItems} setAddedItems = {setAddedItems}
                 isOrdered = {isOrdered}/>
-    <DisplayAddeddProducts amounts = {amount} onAmount = {setAmount} 
+    <DisplayAddeddProducts addedItems = {addedItems} setAddedItems = {setAddedItems} 
                             isOrdered = {isOrdered}/>
 
-    <Footer amounts = {amount} onAmount = {setAmount}
+    <Footer addedItems = {addedItems} setAddedItems = {setAddedItems}
                       isordered = {isOrdered} onOrdered = {setIsordered}
     />
     </>
@@ -33,13 +41,13 @@ interface addeditems{
 const addedItemArray : addeditems[] = [{id : 1 ,name : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 , quantity :1}, {id : 2 , name : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50 , quantity :1},{id : 3 ,name : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 ,quantity :1}];
 
 
-export function Navigation({amounts,onAmount,isOrdered} : 
-  {amounts : addeditems[], 
+export function Navigation({addedItems,setAddedItems,isOrdered} : 
+  {addedItems : productType[], 
    isOrdered : boolean,
-  onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
+  setAddedItems : Dispatch<React.SetStateAction<productType[]>>}){
 
-    const totalPrice = amounts.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
-    const totalItems = amounts.reduce((items,objItem) => items + (objItem.quantity),0);
+    const totalPrice = addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
+    const totalItems = addedItems.reduce((items,objItem) => items + (objItem.quantity),0);
 
   return(
 
@@ -60,12 +68,12 @@ export function Navigation({amounts,onAmount,isOrdered} :
 }
 
 
-export function Footer({amounts,onAmount,isordered,onOrdered} : 
-  {amounts : addeditems[],isordered : boolean,onOrdered : Dispatch<React.SetStateAction<boolean>>, 
-  onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
+export function Footer({addedItems,setAddedItems,isordered,onOrdered} : 
+  {addedItems : productType[],isordered : boolean,onOrdered : Dispatch<React.SetStateAction<boolean>>, 
+  setAddedItems : Dispatch<React.SetStateAction<productType[]>>}){
 
-    let totalPrice = amounts.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
-    let totalItems = amounts.reduce((items,objItem) => items + (objItem.quantity),0);
+    let totalPrice = addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
+    let totalItems = addedItems.reduce((items,objItem) => items + (objItem.quantity),0);
     
    const handleOrder = function(){
       onOrdered(true);
@@ -90,17 +98,17 @@ export function Footer({amounts,onAmount,isordered,onOrdered} :
 }
 
 
-export function DisplayAddeddProducts({amounts,onAmount,isOrdered} : 
-  {amounts : addeditems[],isOrdered:boolean, onAmount : Dispatch<React.SetStateAction<addeditems[]>>}){
+export function DisplayAddeddProducts({addedItems,setAddedItems,isOrdered} : 
+  {addedItems : productType[],isOrdered:boolean, setAddedItems : Dispatch<React.SetStateAction<productType[]>>}){
 
 
   const handleSelect = function(id : number , quantity : number){
-      onAmount(prev => prev.map(pr => (pr.id === id ? {...pr,quantity} : pr))); // Check the id of the product and if it is correct replace the quantity
+      setAddedItems(prev => prev.map(pr => (pr.id === id ? {...pr,quantity} : pr))); // Check the id of the product and if it is correct replace the quantity
       
   } 
 
   const handleButton = function(id: number){
-       onAmount(prev => prev.filter(pr => pr.id!==id));
+       setAddedItems(prev => prev.filter(pr => pr.id!==id));
   }
 
 
@@ -108,10 +116,10 @@ export function DisplayAddeddProducts({amounts,onAmount,isOrdered} :
   return(
     <>
       {!isOrdered && (
-          amounts.map( item => (
-         <li key={item.id}> <img src={item.image} alt="The product picture is not found" className="image"/> <span>{item.name}</span> <span>{item.price}</span> 
+          addedItems.map( item => (
+         <li key={item.id}> <img src={item.image} alt="The product picture is not found" className="image"/> <span>{item.title}</span> <span>{item.price}</span> 
 
-         <select value={item.quantity} title="camount" className="options" onChange={(e : React.ChangeEvent<HTMLSelectElement>) => handleSelect(item.id , Number((e.target.value)))}>
+         <select value={item.quantity} title="caddedItems" className="options" onChange={(e : React.ChangeEvent<HTMLSelectElement>) => handleSelect(item.id , Number((e.target.value)))}>
               {Array.from({ length: 15 }, (_, i) => (
               <option key={i + 1} value={i+1}>
                    {i + 1}
