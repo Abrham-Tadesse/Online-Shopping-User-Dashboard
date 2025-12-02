@@ -14,8 +14,7 @@ export interface productType{
     price : number,
     quantity : number,
   }
-  export let totalPrice : number = 0 ;
-  export let totalItem : number = 0;
+
   let filtered : productType[];
 
 // const productArray : productType[] = [{id : 1 ,title : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 }, {id : 2 , title : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50},{id : 3 ,title : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 }];
@@ -31,8 +30,8 @@ export function DisplayProduct(){
      }
     const {isAdded, setIsAdded,addedItems,setAddedItems} =contexts;
 
-     
-
+     const [totalItem,setTotalItem] = useState<number>(0);
+     const [totalPrice, setTotalPrice] = useState<number>(0);
      const [products,setproducts] = useState<productType[]>([]);
      const [query,setQuery] = useState<string>("");
      const [searchResult,setSearchResult] = useState<productType[]>([]);
@@ -51,9 +50,11 @@ export function DisplayProduct(){
           }
       let data = await resp.json();
          
-      
-      // console.log(data);
-      setproducts(data);
+       // console.log(data);
+      const productWithQuantity : productType[]= data.map((pro : any) => ({...pro,quantity : 0}));
+      // console.log(productWithQuantity);
+      setproducts(productWithQuantity);
+      // console.log(products);
       }
       catch (err : any) {setError(err.message);
 
@@ -83,17 +84,19 @@ export function DisplayProduct(){
 
   return(
     <>
-     <Navigation setQuery={setQuery}/>
+     <Navigation setQuery={setQuery} totalItem={totalItem} totalPrice={totalPrice}/>
      <Products isAdded = {isAdded} onAdded = {setIsAdded} 
          products = {products} searchResult={searchResult} 
          isLoading = {isLoading} error = {error}
-         addedItems = {addedItems} setAddedItems = {setAddedItems}/>
-        <Footer />
+         addedItems = {addedItems} setAddedItems = {setAddedItems}
+          setIsAdded = {setIsAdded} totalItem = {totalItem} setTotalItem = {setTotalItem} 
+           totalPrice = {totalPrice} setTotalPrice = {setTotalPrice}/>
+        <Footer totalItem = {totalItem} totalPrice={totalPrice}/>
     </>
   )
 }
 
-export function Navigation({setQuery} : {setQuery : Dispatch<React.SetStateAction<string>>}){
+export function Navigation({setQuery,totalItem,totalPrice} : {setQuery : Dispatch<React.SetStateAction<string>>,totalItem : number,totalPrice : number}){
              
 
   return(
@@ -115,7 +118,7 @@ export function Navigation({setQuery} : {setQuery : Dispatch<React.SetStateActio
   )
 }
  
-export function Footer(){
+export function Footer({totalItem,totalPrice} : {totalItem : number,totalPrice : number}){
 
   return(
     <>
@@ -128,28 +131,41 @@ export function Footer(){
   )
 }
 
-export function Products({isAdded,onAdded,products,searchResult,isLoading,error,addedItems,setAddedItems} :
+export function Products({isAdded,onAdded,products,searchResult,isLoading,error,addedItems,setAddedItems,
+  setIsAdded,totalItem,totalPrice,setTotalPrice,setTotalItem} :
    {isAdded : number,products : productType[],searchResult:productType[],isLoading : boolean,error : string | null,addedItems : productType[],setAddedItems : Dispatch<React.SetStateAction<productType[]>>,
-     onAdded : React.Dispatch<React.SetStateAction<number>>}){
+     onAdded : React.Dispatch<React.SetStateAction<number>>, setIsAdded : Dispatch<React.SetStateAction<number>>,
+    totalItem : number ,totalPrice : number,setTotalPrice : Dispatch<React.SetStateAction<number>>,setTotalItem : Dispatch<React.SetStateAction<number>>}){
 
   const [addedCart , setAddedCart] = useState<number[]>([]);
+  const [selected , setSelected] = useState<productType>();
   const displayAllProduct : productType[] = searchResult? searchResult : products;
 
- // handling the add to cart button
-    function handleCart(item : productType){
-       onAdded(prev => prev + 1);
-       totalPrice += item.price;
-       totalItem = isAdded + 1;
-      //  totalItem += 1;
-      setAddedCart(prev => {
-        const newCart = [...prev, item.id];
-        return newCart;
-        });
-      setAddedItems(prev =>{
-        const newItem =  [...prev, item];
-       return newItem;
-      });
-    }
+
+   useEffect(function(){
+     async function updatingStatistics(item:productType) {
+      onAdded(prev => prev + 1);
+      setAddedCart(prev => [...prev, item.id]);
+       setAddedItems(prev => [...prev, item]);
+      setTotalItem(addedItems.reduce((items,objItem) => items + (objItem.quantity),0));
+      setTotalPrice(addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0));
+      
+    } 
+    if(!selected) return;
+    updatingStatistics(selected);
+    
+  },[selected,selected?.quantity]);
+  
+  function handlingQuantity(item : productType){
+    const updatedItem = ({...item,quantity : item.quantity + 1});
+    setAddedItems(prev => prev.map(p => p.id === item.id ? updatedItem : p));
+    setSelected(updatedItem);
+
+
+    console.log("added items",addedItems);
+    console.log("numbaer of items",totalItem);
+    console.log("current item");
+  }
 
 
     return(
@@ -162,7 +178,7 @@ export function Products({isAdded,onAdded,products,searchResult,isLoading,error,
         <img src= {`${item.image}`} alt=" no picture is found" />
         <p>price : ${(item.price)}</p>
         <p>{addedCart.includes(item.id) && "✅Added to the cart" }</p>
-        <p><button onClick={() => handleCart(item)}>Add To cart</button></p>
+        <p><button onClick={() => handlingQuantity(item)}>Add To cart</button></p>
         </section>
        ))} 
        </div>

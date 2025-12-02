@@ -8,7 +8,6 @@ export type CartContextType = {
   setAddedItems: React.Dispatch<React.SetStateAction<productType[]>>;
 };
 export const cartContext = createContext<CartContextType | null>(null);
-
 export function CartContextprovider({children} : {children : any}){
     const [isAdded, setIsAdded] = useState<number>(0);
     const [addedItems, setAddedItems] = useState<productType[]>([]);

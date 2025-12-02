@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState, type Dispatch} from "react";
-import { totalItem, totalPrice, type productType } from "./productDisplay";
 import "./cartDisplay.css"
 import { cartContext } from "./contexts";
 
