@@ -3,7 +3,13 @@ import "./cartDisplay.css"
 import { cartContext } from "./contexts";
 
 
-
+export interface productType{
+    id : number;
+    title : string,
+    image : string,
+    price : number,
+    quantity : number,
+  }
 
 export function CartDisplay(){
 

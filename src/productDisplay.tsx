@@ -145,8 +145,6 @@ export function Products({isAdded,onAdded,products,searchResult,isLoading,error,
    useEffect(function(){
      async function updatingStatistics(item:productType) {
       onAdded(prev => prev + 1);
-      setAddedCart(prev => [...prev, item.id]);
-       setAddedItems(prev => [...prev, item]);
       setTotalItem(addedItems.reduce((items,objItem) => items + (objItem.quantity),0));
       setTotalPrice(addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0));
       
@@ -154,8 +152,21 @@ export function Products({isAdded,onAdded,products,searchResult,isLoading,error,
     if(!selected) return;
     updatingStatistics(selected);
     
-  },[selected,selected?.quantity]);
+  },[addedItems]);
   
+
+
+useEffect(function(){
+         function updateCartandItem(item:productType){
+           setAddedCart(prev => [...prev, item.id]);
+           setAddedItems(prev => [...prev, item]);
+         }
+         if(!selected) return;
+      updateCartandItem(selected);
+},[selected])
+
+
+
   function handlingQuantity(item : productType){
     const updatedItem = ({...item,quantity : item.quantity + 1});
     setAddedItems(prev => prev.map(p => p.id === item.id ? updatedItem : p));
