@@ -85,12 +85,12 @@ export function DisplayProduct(){
   return(
     <>
      <Navigation setQuery={setQuery} totalItem={totalItem} totalPrice={totalPrice}/>
-     <Products isAdded = {isAdded} onAdded = {setIsAdded} 
+     <Products onAdded = {setIsAdded} 
          products = {products} searchResult={searchResult} 
          isLoading = {isLoading} error = {error}
          addedItems = {addedItems} setAddedItems = {setAddedItems}
-          setIsAdded = {setIsAdded} totalItem = {totalItem} setTotalItem = {setTotalItem} 
-           totalPrice = {totalPrice} setTotalPrice = {setTotalPrice}/>
+         setTotalItem = {setTotalItem} 
+         setTotalPrice = {setTotalPrice}/>
         <Footer totalItem = {totalItem} totalPrice={totalPrice}/>
     </>
   )
@@ -131,11 +131,11 @@ export function Footer({totalItem,totalPrice} : {totalItem : number,totalPrice :
   )
 }
 
-export function Products({isAdded,onAdded,products,searchResult,isLoading,error,addedItems,setAddedItems,
-  setIsAdded,totalItem,totalPrice,setTotalPrice,setTotalItem} :
-   {isAdded : number,products : productType[],searchResult:productType[],isLoading : boolean,error : string | null,addedItems : productType[],setAddedItems : Dispatch<React.SetStateAction<productType[]>>,
-     onAdded : React.Dispatch<React.SetStateAction<number>>, setIsAdded : Dispatch<React.SetStateAction<number>>,
-    totalItem : number ,totalPrice : number,setTotalPrice : Dispatch<React.SetStateAction<number>>,setTotalItem : Dispatch<React.SetStateAction<number>>}){
+export function Products({onAdded,products,searchResult,isLoading,error,addedItems,setAddedItems,
+  setTotalPrice,setTotalItem} :
+   {products : productType[],searchResult:productType[],isLoading : boolean,error : string | null,addedItems : productType[],setAddedItems : Dispatch<React.SetStateAction<productType[]>>,
+     onAdded : React.Dispatch<React.SetStateAction<number>>,
+   setTotalPrice : Dispatch<React.SetStateAction<number>>,setTotalItem : Dispatch<React.SetStateAction<number>>}){
 
   const [addedCart , setAddedCart] = useState<number[]>([]);
   const [selected , setSelected] = useState<productType>();
@@ -143,14 +143,14 @@ export function Products({isAdded,onAdded,products,searchResult,isLoading,error,
 
 
    useEffect(function(){
-     async function updatingStatistics(item:productType) {
+     async function updatingStatistics() {
       onAdded(prev => prev + 1);
       setTotalItem(addedItems.reduce((items,objItem) => items + (objItem.quantity),0));
       setTotalPrice(addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0));
       
     } 
     if(!selected) return;
-    updatingStatistics(selected);
+    updatingStatistics();
     
   },[addedItems]);
   
@@ -171,11 +171,8 @@ useEffect(function(){
     const updatedItem = ({...item,quantity : item.quantity + 1});
     setAddedItems(prev => prev.map(p => p.id === item.id ? updatedItem : p));
     setSelected(updatedItem);
+ 
 
-
-    console.log("added items",addedItems);
-    console.log("numbaer of items",totalItem);
-    console.log("current item");
   }
 
 
