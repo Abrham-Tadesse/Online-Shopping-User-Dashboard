@@ -28,10 +28,9 @@ export function DisplayProduct(){
      if(!contexts){
       return;
      }
-    const {isAdded, setIsAdded,addedItems,setAddedItems} =contexts;
+    const {isAdded,totalItem,setTotalItem, setIsAdded,totalPrice, setTotalPrice,addedItems,setAddedItems} =contexts;
 
-     const [totalItem,setTotalItem] = useState<number>(0);
-     const [totalPrice, setTotalPrice] = useState<number>(0);
+
      const [products,setproducts] = useState<productType[]>([]);
      const [query,setQuery] = useState<string>("");
      const [searchResult,setSearchResult] = useState<productType[]>([]);
@@ -49,12 +48,8 @@ export function DisplayProduct(){
         throw new Error("Failed to fetch products");
           }
       let data = await resp.json();
-         
-       // console.log(data);
       const productWithQuantity : productType[]= data.map((pro : any) => ({...pro,quantity : 0}));
-      // console.log(productWithQuantity);
       setproducts(productWithQuantity);
-      // console.log(products);
       }
       catch (err : any) {setError(err.message);
 

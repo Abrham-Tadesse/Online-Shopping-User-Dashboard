@@ -12,26 +12,32 @@ export interface productType{
   }
 
 export function CartDisplay(){
+ 
+
 
   const [amount ,setAmount] = useState<addeditems[]>(addedItemArray);
   const[isOrdered, setIsordered] = useState<boolean>(false);
   const contexts = useContext(cartContext);
   if(!contexts) return;
- const {isAdded, setIsAdded,addedItems,setAddedItems} =contexts;
+ const {isAdded,totalItem,setTotalItem, setIsAdded,totalPrice, setTotalPrice,addedItems,setAddedItems} =contexts;
 
   return(
     <>
-    <Navigation addedItems = {addedItems} setAddedItems = {setAddedItems}
-                isOrdered = {isOrdered}/>
+    <Navigation addedItems = {addedItems}
+                isOrdered = {isOrdered} totalItem = {totalItem} setTotalItem = {setTotalItem}
+                totalPrice = {totalPrice} setTotalPrice = {setTotalPrice} />
     <DisplayAddeddProducts addedItems = {addedItems} setAddedItems = {setAddedItems} 
                             isOrdered = {isOrdered}/>
 
-    <Footer addedItems = {addedItems} setAddedItems = {setAddedItems}
-                      isordered = {isOrdered} onOrdered = {setIsordered}
+    <Footer addedItems = {addedItems}
+             setAddedItems={setAddedItems} onOrdered={setIsordered}
+                isOrdered = {isOrdered} totalItem = {totalItem} setTotalItem = {setTotalItem}
+                totalPrice = {totalPrice} setTotalPrice = {setTotalPrice}
     />
     </>
   )
 }
+
 
 //Sattic data
 
@@ -46,13 +52,17 @@ interface addeditems{
 const addedItemArray : addeditems[] = [{id : 1 ,name : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 , quantity :1}, {id : 2 , name : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50 , quantity :1},{id : 3 ,name : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 ,quantity :1}];
 
 
-export function Navigation({addedItems,setAddedItems,isOrdered} : 
+export function Navigation({addedItems,isOrdered,totalItem,setTotalItem,totalPrice,setTotalPrice} : 
   {addedItems : productType[], 
    isOrdered : boolean,
-  setAddedItems : Dispatch<React.SetStateAction<productType[]>>}){
+   totalItem : number,
+   setTotalItem : Dispatch<React.SetStateAction<number>>
+   totalPrice : number,
+   setTotalPrice : Dispatch<React.SetStateAction<number>>
+ }){
 
-    const totalPrice = addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
-    const totalItems = addedItems.reduce((items,objItem) => items + (objItem.quantity),0);
+    // const totalPrice = addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
+    // const totalItems = addedItems.reduce((items,objItem) => items + (objItem.quantity),0);
 
   return(
 
@@ -62,7 +72,7 @@ export function Navigation({addedItems,setAddedItems,isOrdered} :
     <h2> Acme co.</h2>
       </section>
       <section className="price-num">
-        <p>total item <span className="value"> {isOrdered ? 0 : totalItems}</span></p>
+        <p>total item <span className="value"> {isOrdered ? 0 : totalItem}</span></p>
         <p>total price <span className="value">$ {isOrdered? "0.00" : totalPrice}</span></p>
         <p><button className="view">view product</button></p>
       </section>
@@ -73,23 +83,30 @@ export function Navigation({addedItems,setAddedItems,isOrdered} :
 }
 
 
-export function Footer({addedItems,setAddedItems,isordered,onOrdered} : 
-  {addedItems : productType[],isordered : boolean,onOrdered : Dispatch<React.SetStateAction<boolean>>, 
-  setAddedItems : Dispatch<React.SetStateAction<productType[]>>}){
+export function Footer({addedItems,setAddedItems,isOrdered,onOrdered,totalItem,setTotalItem,totalPrice,setTotalPrice} : 
+  {addedItems : productType[],
+    isOrdered : boolean,
+    onOrdered : Dispatch<React.SetStateAction<boolean>>, 
+    setAddedItems : Dispatch<React.SetStateAction<productType[]>>,
+    totalItem : number,
+    setTotalItem : Dispatch<React.SetStateAction<number>>
+    totalPrice : number,
+    setTotalPrice : Dispatch<React.SetStateAction<number>>
+  }){
 
-    let totalPrice = addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
-    let totalItems = addedItems.reduce((items,objItem) => items + (objItem.quantity),0);
+    // let totalPrice = addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
+    // let totalItem = addedItems.reduce((items,objItem) => items + (objItem.quantity),0);
     
    const handleOrder = function(){
       onOrdered(true);
-      console.log(isordered);
+      console.log(isOrdered);
     }
 
   return(
-    <> { !isordered && (
+    <> { !isOrdered && (
       <div>
       <section className="footer price-num">
-        <p>total item <span className="value"> {`${totalItems}`}</span></p>
+        <p>total item <span className="value"> {`${totalItem}`}</span></p>
         <p>total price <span className="value">{`$ ${totalPrice}`}</span></p>
         <button onClick={()=> handleOrder()}>place order</button>
       </section>
@@ -108,8 +125,10 @@ export function DisplayAddeddProducts({addedItems,setAddedItems,isOrdered} :
 
 
   const handleSelect = function(id : number , quantity : number){
-      setAddedItems(prev => prev.map(pr => (pr.id === id ? {...pr,quantity} : pr))); // Check the id of the product and if it is correct replace the quantity
-      
+      setAddedItems(prev => prev.map(pr => (pr.id === id ? {...pr,quantity : quantity} : pr))); // Check the id of the product and if it is correct replace the quantity
+      //use short hand representation if the variable name that receives the argument and the object name are the same
+       
+      //  setAddedItems(prev => prev.map(pr => (pr.id === id ? {...pr,quantity} : pr)));
   } 
 
   const handleButton = function(id: number){
@@ -143,4 +162,3 @@ export function DisplayAddeddProducts({addedItems,setAddedItems,isOrdered} :
     </>
   )
 }
-
