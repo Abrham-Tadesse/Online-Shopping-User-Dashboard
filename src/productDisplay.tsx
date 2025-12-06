@@ -1,6 +1,7 @@
 import React, { useState,useEffect, type Dispatch, type SetStateAction, createContext, useContext } from "react";
 import "./productDisplay.css";
 import { cartContext } from "./contexts";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -92,7 +93,7 @@ export function DisplayProduct(){
 }
 
 export function Navigation({setQuery,totalItem,totalPrice} : {setQuery : Dispatch<React.SetStateAction<string>>,totalItem : number,totalPrice : number}){
-             
+              const navigate = useNavigate();
 
   return(
 
@@ -105,7 +106,7 @@ export function Navigation({setQuery,totalItem,totalPrice} : {setQuery : Dispatc
       <section className="price-num">
         <p>total item <span className="value"> {`${totalItem}`}</span></p>
         <p>total price <span className="value">{`$ ${totalPrice}`}</span></p>
-        <p><button className="view">view cart</button></p>
+        <p><button className="view" onClick={() => {navigate("/cartDisplay")}}>view cart</button></p>
       </section>
     </div>
     <hr style={{border : "2px black solid"}}/>
