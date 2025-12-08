@@ -19,7 +19,7 @@ export function CartDisplay(){
   const[isOrdered, setIsordered] = useState<boolean>(false);
   const contexts = useContext(cartContext);
   if(!contexts) return;
- const {isAdded,totalItem,setTotalItem, setIsAdded,totalPrice, setTotalPrice,addedItems,setAddedItems} =contexts;
+ const {isAdded,setIsAdded,totalItem,selected,setSelected,setTotalItem,totalPrice, setTotalPrice,addedItems,setAddedItems,selectedQuantity,setSlectedQuantity} =contexts;
 
   return(
     <>
@@ -27,7 +27,11 @@ export function CartDisplay(){
                 isOrdered = {isOrdered} totalItem = {totalItem} setTotalItem = {setTotalItem}
                 totalPrice = {totalPrice} setTotalPrice = {setTotalPrice} />
     <DisplayAddeddProducts addedItems = {addedItems} setAddedItems = {setAddedItems} 
-                            isOrdered = {isOrdered}/>
+                            setSelected = {setSelected}
+                            isOrdered = {isOrdered} selectedQuantity = {selectedQuantity} 
+                             setSlectedQuantity = {setSlectedQuantity} totalItem = {totalItem} 
+                             setTotalItem = {setTotalItem} totalPrice = {totalPrice} setTotalPrice = {setTotalPrice}
+                             selected = {selected} />
 
     <Footer addedItems = {addedItems}
              setAddedItems={setAddedItems} onOrdered={setIsordered}
@@ -120,23 +124,35 @@ export function Footer({addedItems,setAddedItems,isOrdered,onOrdered,totalItem,s
 }
 
 
-export function DisplayAddeddProducts({addedItems,setAddedItems,isOrdered} : 
-  {addedItems : productType[],isOrdered:boolean, setAddedItems : Dispatch<React.SetStateAction<productType[]>>}){
+export function DisplayAddeddProducts({addedItems,setAddedItems,isOrdered,selectedQuantity,setSlectedQuantity,totalItem,setTotalItem,totalPrice, setTotalPrice,selected} : 
+  {addedItems : productType[],isOrdered:boolean,totalItem : number,totalPrice : number,setTotalItem : Dispatch<React.SetStateAction<number>>,setTotalPrice : Dispatch<React.SetStateAction<number>>, setAddedItems : Dispatch<React.SetStateAction<productType[]>>,selectedQuantity : number[] , setSlectedQuantity : Dispatch<React.SetStateAction<number[]>>,selected :productType,setSelected : Dispatch<React.SetStateAction<productType>>}){
+
+
+
+   useEffect(function(){
+     async function updatingStatistics() {
+      // onAdded(prev => prev + 1);
+      setTotalItem(addedItems.reduce((items,objItem) => items + (objItem.quantity),0));
+      setTotalPrice(addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0));
+      
+    } 
+    if(!selected) return;
+    updatingStatistics();
+    
+  },[addedItems,selectedQuantity]);
 
 
   const handleSelect = function(id : number , quantity : number){
       setAddedItems(prev => prev.map(pr => (pr.id === id ? {...pr,quantity : quantity} : pr))); // Check the id of the product and if it is correct replace the quantity
-      //use short hand representation if the variable name that receives the argument and the object name are the same
-       
+      //use short hand representation if the variable name that receives the argument and the object name are the same 
       //  setAddedItems(prev => prev.map(pr => (pr.id === id ? {...pr,quantity} : pr)));
   } 
 
   const handleButton = function(id: number){
        setAddedItems(prev => prev.filter(pr => pr.id!==id));
   }
-console.log(addedItems);
-
-
+   console.log(addedItems);
+   console.log(selectedQuantity);
   return(
     <>
       {!isOrdered && (

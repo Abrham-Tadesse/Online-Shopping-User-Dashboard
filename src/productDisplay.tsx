@@ -29,7 +29,7 @@ export function DisplayProduct(){
      if(!contexts){
       return;
      }
-    const {isAdded,selectedQuantity,setSlectedQuantity,totalItem,setTotalItem, setIsAdded,totalPrice, setTotalPrice,addedItems,setAddedItems} =contexts;
+    const {isAdded,selectedQuantity,setSlectedQuantity,selected, setSelected,totalItem,setTotalItem, setIsAdded,totalPrice, setTotalPrice,addedItems,setAddedItems} =contexts;
 
 
      const [products,setproducts] = useState<productType[]>([]);
@@ -81,7 +81,9 @@ export function DisplayProduct(){
   return(
     <>
      <Navigation setQuery={setQuery} totalItem={totalItem} totalPrice={totalPrice}/>
-     <Products onAdded = {setIsAdded} 
+     <Products onAdded = {setIsAdded}
+     selected={selected}
+     setSelected = {setSelected} 
          products = {products} searchResult={searchResult} 
          isLoading = {isLoading} error = {error}
          addedItems = {addedItems} setAddedItems = {setAddedItems}
@@ -130,16 +132,18 @@ export function Footer({totalItem,totalPrice} : {totalItem : number,totalPrice :
 }
 
 export function Products({onAdded,products,searchResult,isLoading,error,addedItems,setAddedItems,
-  setTotalPrice,setTotalItem,selectedQuantity,setSlectedQuantity} :
+  setTotalPrice,setTotalItem,selectedQuantity,setSlectedQuantity,selected,setSelected} :
    {products : productType[],searchResult:productType[],isLoading : boolean,error : string | null,addedItems : productType[],setAddedItems : Dispatch<React.SetStateAction<productType[]>>,
-     onAdded : React.Dispatch<React.SetStateAction<number>>,
+    onAdded : React.Dispatch<React.SetStateAction<number>>,
    setTotalPrice : Dispatch<React.SetStateAction<number>>,
    setTotalItem : Dispatch<React.SetStateAction<number>>,
    selectedQuantity : number[],
-  setSlectedQuantity: Dispatch<React.SetStateAction<number[]>>}){
+   setSlectedQuantity: Dispatch<React.SetStateAction<number[]>>,
+   selected : productType,
+   setSelected : Dispatch<React.SetStateAction<productType>>}){
 
   const [addedCart , setAddedCart] = useState<number[]>([]);
-  const [selected , setSelected] = useState<productType>();
+  // const [selected , setSelected] = useState<productType>();
   const displayAllProduct : productType[] = searchResult? searchResult : products;
 
 
@@ -148,7 +152,7 @@ export function Products({onAdded,products,searchResult,isLoading,error,addedIte
       onAdded(prev => prev + 1);
       setTotalItem(addedItems.reduce((items,objItem) => items + (objItem.quantity),0));
       setTotalPrice(addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0));
-      setSlectedQuantity(addedItems.map(item => item.quantity));
+      
     } 
     if(!selected) return;
     updatingStatistics();
@@ -165,8 +169,9 @@ useEffect(function(){
            if(!isExist) setAddedItems(prev => [...prev, item]);
            setAddedItems(prev => [...prev]);
            console.log(addedItems);
-          //  setSlectedQuantity(prev =>[...addedItems.id]); // here the performance of the site will be late please handle it the array should only update the quantity values but it adds the quantity as a new entry
            console.log(selectedQuantity);
+           const quantityArray : number[] = addedItems.map(item => item.quantity);
+           setSlectedQuantity(quantityArray);
          }
          if(!selected) return;
       updateCartandItem(selected);

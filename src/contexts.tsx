@@ -3,6 +3,8 @@ import type { productType } from "./productDisplay";
 
 export type CartContextType = {
   selectedQuantity : number[];
+  selected  : productType;
+  setSelected : Dispatch<React.SetStateAction<productType>>;
   setSlectedQuantity : Dispatch<React.SetStateAction<number[]>>;
   totalItem : number;
   setTotalItem : Dispatch<React.SetStateAction<number>>
@@ -16,6 +18,7 @@ export type CartContextType = {
 export const cartContext = createContext<CartContextType | null>(null);
 
 export function CartContextprovider({children} : {children : any}){
+    const [selected , setSelected] = useState<any>();
     const[selectedQuantity,setSlectedQuantity] = useState<number[]>([]);
     const [isAdded, setIsAdded] = useState<number>(0);
     const [addedItems, setAddedItems] = useState<productType[]>([]);
@@ -24,7 +27,7 @@ export function CartContextprovider({children} : {children : any}){
 
     return (
         <>
-        <cartContext.Provider value={{selectedQuantity,setSlectedQuantity,isAdded,setIsAdded,addedItems,setAddedItems,totalItem,setTotalItem,totalPrice, setTotalPrice}}>
+        <cartContext.Provider value={{selected, setSelected ,selectedQuantity,setSlectedQuantity,isAdded,setIsAdded,addedItems,setAddedItems,totalItem,setTotalItem,totalPrice, setTotalPrice}}>
             {children}
         </cartContext.Provider>
         </>
