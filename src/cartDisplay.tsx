@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState, type Dispatch} from "react";
 import "./cartDisplay.css"
 import { cartContext } from "./contexts";
+import { useNavigate } from "react-router-dom";
 
 
 export interface productType{
@@ -64,7 +65,7 @@ export function Navigation({addedItems,isOrdered,totalItem,setTotalItem,totalPri
    totalPrice : number,
    setTotalPrice : Dispatch<React.SetStateAction<number>>
  }){
-
+  const navigate = useNavigate();
     // const totalPrice = addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
     // const totalItems = addedItems.reduce((items,objItem) => items + (objItem.quantity),0);
 
@@ -78,7 +79,7 @@ export function Navigation({addedItems,isOrdered,totalItem,setTotalItem,totalPri
       <section className="price-num">
         <p>total item <span className="value"> {isOrdered ? 0 : totalItem}</span></p>
         <p>total price <span className="value">$ {isOrdered? "0.00" : totalPrice.toFixed(3)}</span></p>
-        <p><button className="view">view product</button></p>
+        <p><button className="view" onClick={() => navigate("/productDisplay")}>view product</button></p>
       </section>
     </div>
     <hr style={{border : "2px black solid"}}/>
