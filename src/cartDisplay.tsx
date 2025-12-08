@@ -73,7 +73,7 @@ export function Navigation({addedItems,isOrdered,totalItem,setTotalItem,totalPri
       </section>
       <section className="price-num">
         <p>total item <span className="value"> {isOrdered ? 0 : totalItem}</span></p>
-        <p>total price <span className="value">$ {isOrdered? "0.00" : totalPrice}</span></p>
+        <p>total price <span className="value">$ {isOrdered? "0.00" : totalPrice.toFixed(3)}</span></p>
         <p><button className="view">view product</button></p>
       </section>
     </div>
@@ -107,7 +107,7 @@ export function Footer({addedItems,setAddedItems,isOrdered,onOrdered,totalItem,s
       <div>
       <section className="footer price-num">
         <p>total item <span className="value"> {`${totalItem}`}</span></p>
-        <p>total price <span className="value">{`$ ${totalPrice}`}</span></p>
+        <p>total price <span className="value">{`$ ${totalPrice.toFixed(3)}`}</span></p>
         <button onClick={()=> handleOrder()}>place order</button>
       </section>
       </div>
@@ -134,7 +134,7 @@ export function DisplayAddeddProducts({addedItems,setAddedItems,isOrdered} :
   const handleButton = function(id: number){
        setAddedItems(prev => prev.filter(pr => pr.id!==id));
   }
-
+console.log(addedItems);
 
 
   return(
