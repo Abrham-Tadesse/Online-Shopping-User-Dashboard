@@ -156,6 +156,7 @@ export function Products({onAdded,products,searchResult,isLoading,error,addedIte
     } 
     if(!selected) return;
     updatingStatistics();
+    console.log(addedItems);
     
   },[addedItems,selectedQuantity]);
   
@@ -169,7 +170,7 @@ useEffect(function(){
            if(!isExist) setAddedItems(prev => [...prev, item]);
            setAddedItems(prev => [...prev]);
            console.log(addedItems);
-           console.log(selectedQuantity);
+          //  console.log(selectedQuantity);
            const quantityArray : number[] = addedItems.map(item => item.quantity);
            setSlectedQuantity(quantityArray);
          }

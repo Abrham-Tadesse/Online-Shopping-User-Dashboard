@@ -1,4 +1,4 @@
-import React, { useState , createContext, type Dispatch, type SetStateAction} from "react";
+import React, { useState ,useMemo, createContext, type Dispatch, type SetStateAction} from "react";
 import type { productType } from "./productDisplay";
 
 export type CartContextType = {
@@ -24,6 +24,19 @@ export function CartContextprovider({children} : {children : any}){
     const [addedItems, setAddedItems] = useState<productType[]>([]);
     const [totalItem,setTotalItem] = useState<number>(0);
     const [totalPrice, setTotalPrice] = useState<number>(0);
+
+//       const value = useMemo(() => ({
+//     addedItems,
+//     setAddedItems,
+//     totalItem,
+//     setTotalItem,
+//     totalPrice,
+//     setTotalPrice
+//   }), [
+//     addedItems,
+//     totalItem,
+//     totalPrice,
+//   ]);
 
     return (
         <>

@@ -20,7 +20,7 @@ export function CartDisplay(){
   const[isOrdered, setIsordered] = useState<boolean>(false);
   const contexts = useContext(cartContext);
   if(!contexts) return;
- const {isAdded,setIsAdded,totalItem,selected,setSelected,setTotalItem,totalPrice, setTotalPrice,addedItems,setAddedItems,selectedQuantity,setSlectedQuantity} =contexts;
+ const {isAdded,setIsAdded,totalItem,selected,setSelected,setTotalItem,totalPrice, setTotalPrice,addedItems,setAddedItems,selectedQuantity,setSlectedQuantity} = contexts;
 
   return(
     <>
@@ -30,11 +30,11 @@ export function CartDisplay(){
     <DisplayAddeddProducts addedItems = {addedItems} setAddedItems = {setAddedItems} 
                             setSelected = {setSelected}
                             isOrdered = {isOrdered} selectedQuantity = {selectedQuantity} 
-                             setSlectedQuantity = {setSlectedQuantity} totalItem = {totalItem} 
-                             setTotalItem = {setTotalItem} totalPrice = {totalPrice} setTotalPrice = {setTotalPrice}
-                             selected = {selected} />
+                            setSlectedQuantity = {setSlectedQuantity} totalItem = {totalItem} 
+                            setTotalItem = {setTotalItem} totalPrice = {totalPrice} setTotalPrice = {setTotalPrice}
+                            selected = {selected} />
 
-    <Footer addedItems = {addedItems}
+    <Footer addedItems = {addedItems} setSlectedQuantity ={setSlectedQuantity}
              setAddedItems={setAddedItems} onOrdered={setIsordered}
                 isOrdered = {isOrdered} totalItem = {totalItem} setTotalItem = {setTotalItem}
                 totalPrice = {totalPrice} setTotalPrice = {setTotalPrice}
@@ -66,8 +66,7 @@ export function Navigation({addedItems,isOrdered,totalItem,setTotalItem,totalPri
    setTotalPrice : Dispatch<React.SetStateAction<number>>
  }){
   const navigate = useNavigate();
-    // const totalPrice = addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
-    // const totalItems = addedItems.reduce((items,objItem) => items + (objItem.quantity),0);
+  
 
   return(
 
@@ -78,7 +77,7 @@ export function Navigation({addedItems,isOrdered,totalItem,setTotalItem,totalPri
       </section>
       <section className="price-num">
         <p>total item <span className="value"> {isOrdered ? 0 : totalItem}</span></p>
-        <p>total price <span className="value">$ {isOrdered? "0.00" : totalPrice.toFixed(3)}</span></p>
+        <p>total price <span className="value">$ {isOrdered? "0.00" : totalPrice.toFixed(2)}</span></p>
         <p><button className="view" onClick={() => navigate("/productDisplay")}>view product</button></p>
       </section>
     </div>
@@ -88,7 +87,7 @@ export function Navigation({addedItems,isOrdered,totalItem,setTotalItem,totalPri
 }
 
 
-export function Footer({addedItems,setAddedItems,isOrdered,onOrdered,totalItem,setTotalItem,totalPrice,setTotalPrice} : 
+export function Footer({addedItems,setAddedItems,isOrdered,onOrdered,totalItem,setSlectedQuantity,setTotalItem,totalPrice,setTotalPrice} : 
   {addedItems : productType[],
     isOrdered : boolean,
     onOrdered : Dispatch<React.SetStateAction<boolean>>, 
@@ -97,22 +96,24 @@ export function Footer({addedItems,setAddedItems,isOrdered,onOrdered,totalItem,s
     setTotalItem : Dispatch<React.SetStateAction<number>>
     totalPrice : number,
     setTotalPrice : Dispatch<React.SetStateAction<number>>
+    setSlectedQuantity : Dispatch<React.SetStateAction<number[]>>
   }){
 
-    // let totalPrice = addedItems.reduce((tot,obj) => tot+(obj.price*obj.quantity),0);
-    // let totalItem = addedItems.reduce((items,objItem) => items + (objItem.quantity),0);
     
    const handleOrder = function(){
       onOrdered(true);
-      console.log(isOrdered);
+      setAddedItems([]);
+      setSlectedQuantity([]);
     }
 
   return(
-    <> { !isOrdered && (
+    <> { 
+      // !isOrdered && 
+      (
       <div>
       <section className="footer price-num">
         <p>total item <span className="value"> {`${totalItem}`}</span></p>
-        <p>total price <span className="value">{`$ ${totalPrice.toFixed(3)}`}</span></p>
+        <p>total price <span className="value">{`$ ${totalPrice.toFixed(2)}`}</span></p>
         <button onClick={()=> handleOrder()}>place order</button>
       </section>
       </div>
@@ -152,11 +153,13 @@ export function DisplayAddeddProducts({addedItems,setAddedItems,isOrdered,select
   const handleButton = function(id: number){
        setAddedItems(prev => prev.filter(pr => pr.id!==id));
   }
-   console.log(addedItems);
-   console.log(selectedQuantity);
+   // console.log(addedItems);
+  //  console.log(selectedQuantity);
   return(
     <>
-      {!isOrdered && (
+      {
+      // !isOrdered && 
+      (
           addedItems.map( item => (
          <li key={item.id}> <img src={item.image} alt="The product picture is not found" className="image"/> <span>{item.title}</span> <span>{item.price}</span> 
 
