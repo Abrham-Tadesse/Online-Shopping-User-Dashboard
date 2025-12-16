@@ -73,7 +73,7 @@ export function Navigation({isOrdered,totalItem,totalPrice} :
     <>
     <div className="headers">
       <section className="title">
-    <h2> Acme co.</h2>
+    <h2> New E-co.</h2>
       </section>
       <section className="price-num">
         <p>total item <span className="value"> {isOrdered ? 0 : totalItem}</span></p>

@@ -104,7 +104,7 @@ export function Navigation({setQuery,totalItem,totalPrice} : {setQuery : Dispatc
     <>
     <div className="headers">
       <section className="title">
-    <h2> Acme co.</h2>
+    <h2> New E-co.</h2>
       </section>
        <input type="text" className="searchInput" placeholder="search here" onChange={(e) => setQuery(e.target.value)}/> 
       <section className="price-num">
