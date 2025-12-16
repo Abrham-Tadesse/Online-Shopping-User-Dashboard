@@ -1,4 +1,4 @@
-import React, { useState ,useMemo, createContext, type Dispatch, type SetStateAction} from "react";
+import React, { useState , createContext, type Dispatch} from "react";
 import type { productType } from "./productDisplay";
 
 export type CartContextType = {

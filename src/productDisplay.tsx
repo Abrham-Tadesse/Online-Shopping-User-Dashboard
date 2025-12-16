@@ -1,4 +1,4 @@
-import React, { useState,useEffect, type Dispatch, type SetStateAction, createContext, useContext } from "react";
+import React, { useState,useEffect, type Dispatch, useContext } from "react";
 import "./productDisplay.css";
 import { cartContext } from "./contexts";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ export interface productType{
     quantity : number,
   }
 
-  let filtered : productType[];
+  // let filtered : productType[];
 
 // const productArray : productType[] = [{id : 1 ,title : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 }, {id : 2 , title : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50},{id : 3 ,title : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 }];
 
@@ -29,7 +29,7 @@ export function DisplayProduct(){
      if(!contexts){
       return;
      }
-    const {isAdded,selectedQuantity,setSlectedQuantity,selected, setSelected,totalItem,setTotalItem, setIsAdded,totalPrice, setTotalPrice,addedItems,setAddedItems} =contexts;
+    const {selectedQuantity,setSlectedQuantity,selected, setSelected,totalItem,setTotalItem, setIsAdded,totalPrice, setTotalPrice,addedItems,setAddedItems} =contexts;
 
 
      const [products,setproducts] = useState<productType[]>([]);

@@ -16,11 +16,11 @@ export function CartDisplay(){
  
 
 
-  const [amount ,setAmount] = useState<addeditems[]>(addedItemArray);
+  // const [amount ,setAmount] = useState<addeditems[]>(addedItemArray);
   const[isOrdered, setIsordered] = useState<boolean>(false);
   const contexts = useContext(cartContext);
   if(!contexts) return;
- const {isAdded,setIsAdded,totalItem,selected,setSelected,setTotalItem,totalPrice, setTotalPrice,addedItems,setAddedItems,selectedQuantity,setSlectedQuantity} = contexts;
+ const {totalItem,selected,setSelected,setTotalItem,totalPrice, setTotalPrice,addedItems,setAddedItems,selectedQuantity,setSlectedQuantity} = contexts;
 
   return(
     <>
@@ -46,18 +46,18 @@ export function CartDisplay(){
 
 //Sattic data
 
-interface addeditems{
-    id : number;
-    name : string,
-    image : string,
-    price : number,
-    quantity : number,
-}
+// interface addeditems{
+//     id : number;
+//     name : string,
+//     image : string,
+//     price : number,
+//     quantity : number,
+// }
 
-const addedItemArray : addeditems[] = [{id : 1 ,name : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 , quantity :1}, {id : 2 , name : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50 , quantity :1},{id : 3 ,name : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 ,quantity :1}];
+// const addedItemArray : addeditems[] = [{id : 1 ,name : "Watch 1" ,image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStxNO_7qy6ZbEqOkdC1_66BnhAPKK7KTDutQ&s",price : 20 , quantity :1}, {id : 2 , name : "shirt", image : "https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=", price : 50 , quantity :1},{id : 3 ,name : "watch2" , image : "https://m.media-amazon.com/images/I/61n0aVXta7L._AC_UY1000_.jpg" , price : 40 ,quantity :1}];
 
 
-export function Navigation({addedItems,isOrdered,totalItem,setTotalItem,totalPrice,setTotalPrice} : 
+export function Navigation({isOrdered,totalItem,totalPrice} : 
   {addedItems : productType[], 
    isOrdered : boolean,
    totalItem : number,
@@ -87,7 +87,7 @@ export function Navigation({addedItems,isOrdered,totalItem,setTotalItem,totalPri
 }
 
 
-export function Footer({addedItems,setAddedItems,isOrdered,onOrdered,totalItem,setSlectedQuantity,setTotalItem,totalPrice,setTotalPrice} : 
+export function Footer({setAddedItems,onOrdered,totalItem,setSlectedQuantity,totalPrice} : 
   {addedItems : productType[],
     isOrdered : boolean,
     onOrdered : Dispatch<React.SetStateAction<boolean>>, 
@@ -126,7 +126,7 @@ export function Footer({addedItems,setAddedItems,isOrdered,onOrdered,totalItem,s
 }
 
 
-export function DisplayAddeddProducts({addedItems,setAddedItems,isOrdered,selectedQuantity,setSlectedQuantity,totalItem,setTotalItem,totalPrice, setTotalPrice,selected} : 
+export function DisplayAddeddProducts({addedItems,setAddedItems,isOrdered,selectedQuantity,setTotalItem, setTotalPrice,selected} : 
   {addedItems : productType[],isOrdered:boolean,totalItem : number,totalPrice : number,setTotalItem : Dispatch<React.SetStateAction<number>>,setTotalPrice : Dispatch<React.SetStateAction<number>>, setAddedItems : Dispatch<React.SetStateAction<productType[]>>,selectedQuantity : number[] , setSlectedQuantity : Dispatch<React.SetStateAction<number[]>>,selected :productType,setSelected : Dispatch<React.SetStateAction<productType>>}){
 
 
