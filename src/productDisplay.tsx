@@ -44,7 +44,7 @@ export function DisplayProduct(){
       try{
         setIsLoading(true);
         setError(null);
-        const resp = await fetch("https://fakestoreapi.com/products");
+        const resp = await fetch("https://fakestoreapi.com/products"); 
           if (!resp.ok) {
         throw new Error("Failed to fetch products");
           }
